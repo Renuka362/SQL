@@ -1,0 +1,175 @@
+renuka-cheemala:~/environment $ sqlite3 db.sqlite3
+SQLite version 3.24.0 2018-06-04 19:24:41
+Enter ".help" for usage hints.
+sqlite> INSERT INTO Project(title)values('imdb');  
+sqlite> INSERT INTO Project(title)values('dashboards');
+sqlite> SELECT * FROM Project;
+1|Android Task Monitoring|362
+2|Online Mobile Recharge Portal Project2|302
+3|Detecting E Banking Phishing Websites Using Associative Classification1|362
+4|Online Mobile Recharge Portal Project2|300
+|imdb|
+|dashboards|
+sqlite> .tables
+CUSTOMERS         EmployeeProjects  Orderss           Projectt        
+Customer          Mobile            Owner             Student         
+Employee          Orders            Project           Students        
+sqlite> SELECT * FROM Employee;                                                                                                  
+1|John|200000.0
+2|Ram|300000.0
+sqlite> SELECT * FROM EmployeeProjects;                                                                                          
+sqlite> INSERT INTO EmployeeProjects(project_id, employee_id)values(1,1);
+sqlite> INSERT INTO EmployeeProjects(project_id, employee_id)values(1,2);  
+sqlite> INSERT INTO EmployeeProjects(project_id, employee_id)values(2,1);  
+sqlite> SELECT * FROM EmployeeProjects;                                                                                          
+1|1|1
+1|2|2
+2|1|3
+sqlite> SELECT employee_id FROM EmployeeProjects WHERE project_id=1;
+1
+2
+sqlite> SELECT project_id FROM EmployeeProjects WHERE employee_id=1;
+1
+2
+sqlite> .tables
+CUSTOMERS         EmployeeProjects  Orderss           Projectt        
+Customer          Mobile            Owner             Student         
+Employee          Orders            Project           Students        
+sqlite> SELLECT * FROM Students;
+Error: near "SELLECT": syntax error
+sqlite> SELECT * FROM Students;                                                                                                  
+302|Saisri|saisri@gmail.com
+300|Siri|siri@gmail.com
+362|Renuka|renuka@gmail.com
+sqlite> SELECT * FROM Student;                                                                                                   
+362|Renka|24|90
+360|Harika|25|100
+sqlite> drop TABLE Student;
+sqlite> .tables
+CUSTOMERS         EmployeeProjects  Orderss           Projectt        
+Customer          Mobile            Owner             Students        
+Employee          Orders            Project         
+sqlite> CREATE TABLE Student (student_id INT,name VARCHAR(250),age INT,marks INT);
+sqlite> drop TABLE Student;
+sqlite> CREATE TABLE Student (student_id INT PRIMARY KEY AUTOINCREMENT,name VARCHAR(250),age INT,marks INT);                     
+Error: AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
+sqlite> CREATE TABLE Student (student_id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(250),age INT,marks INT);                 
+sqlite> INSERT INTO Student ('john',20,90);                                                                                      
+Error: near "20": syntax error
+sqlite> INSERT INTO Student (name,age,marks) values('john',20,90);                                                               
+sqlite> INSERT INTO Student (name,age,marks) values('ron',22,98);                                                                
+sqlite> INSERT INTO Student (name,age,marks) values('ram',19,91);                                                                
+sqlite> SELECT * FROM Student;                                                                                                   
+1|john|20|90
+2|ron|22|98
+3|ram|19|91
+sqlite> CREATE TABLE Course(course_id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(250));                                     
+sqlite> INSERT INTO Course (title) values('Data Structures');
+sqlite> INSERT INTO Course (title) values('Artificial Intelligence');
+sqlite> INSERT INTO Course (title) values('Art of Cooking');
+sqlite> INSERT INTO Course (title) values('Mythology');
+sqlite> INSERT INTO Course (title) values('English Literature');
+sqlite> SELECT * FROM Course;
+1|Data Structures
+2|Artificial Intelligence
+3|Art of Cooking
+4|Mythology
+5|English Literature
+sqlite> CREATE TABLE Enrollement(enrollment_id INTEGER PRIMARY KEY AUTOINCREMENT,course_id INTEGER NOY NULL,student_id INTEGER NOT NULL, FOREIGN KEY(course_id) REFERENCES Course(course_id),FOREIGN KEY(student_id) REFERENCES Student(student_id));             
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(1,1);
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(2,1);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(3,1);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(4,1);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(5,1);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(1,2);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(2,2);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(3,2);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(4,2);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(1,3);                                                               
+sqlite> INSERT INTO Enrollement(course_id,student_id) values(2,3);                                                               
+sqlite> SELECT * FROM Enrollement;
+1|1|1
+2|2|1
+3|3|1
+4|4|1
+5|5|1
+6|1|2
+7|2|2
+8|3|2
+9|4|2
+10|1|3
+11|2|3
+sqlite> SELECT student_id FROM Enrollement WHERE course_id = 1;
+1
+2
+3
+sqlite> SELECT course_id FROM Enrollement WHERE student_id = 1;                                                                  
+1
+2
+3
+4
+5
+sqlite> PRAGMA foreign_key = on;
+sqlite> CREATE TABLE Person(id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(250),email VARCHAR(250));
+sqlite> INSERT INTO Person(name,email) values('Renuka','Renuka@gmail.com');
+sqlite> INSERT INTO Person(name,email) values('sindhu','sindhu@gmail.com');
+sqlite> INSERT INTO Person(name,email) values('harika','harika@gmail.com');
+sqlite> INSERT INTO Person(name,email) values('siri','siri@gmail.com');
+sqlite> SELECT * FROM Person;
+1|Renuka|Renuka@gmail.com
+2|sindhu|sindhu@gmail.com
+3|harika|harika@gmail.com
+4|siri|siri@gmail.com
+sqlite> .tables
+CUSTOMERS         EmployeeProjects  Orderss           Projectt        
+Course            Enrollement       Owner             Student         
+Customer          Mobile            Person            Students        
+Employee          Orders            Project         
+sqlite> CREATE TABLE Projects(project_id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(250),id,FOREIGN KEY(id) REFERENCES(Person(id) ON DELETE CASCADE);
+Error: near "(": syntax error
+sqlite> CREATE TABLE Projects(project_id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(250),id,FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE
+   ...> ;
+Error: near ";": syntax error
+sqlite> CREATE TABLE Projects(project_id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(250),id,FOREIGN KEY(id) REFERENCES Person(id) ON DELETE CASCADE);                                                                                               
+sqlite> INSERT INTO Projects(title,id) values('Android Task Monitoring',1);
+sqlite> INSERT INTO Projects(title,id) values('Online Mobile Recharge Portal Project',2);
+sqlite> INSERT INTO Projects(title,id) values('Detecting E Banking Phishing Websites Using Associative Classification',1);
+sqlite> INSERT INTO Projects(title,id) values('Vehicle Tracking Using Driver Mobile Gps Tracking',2);
+sqlite> INSERT INTO Projects(title,id) values('Sentiment Analysis for Product Rating',3);
+sqlite> INSERT INTO Projects(title,id) values('Fingerprint Based ATM System',4);
+sqlite> SELECT * FROM Projects;
+1|Android Task Monitoring|1
+2|Online Mobile Recharge Portal Project|2
+3|Detecting E Banking Phishing Websites Using Associative Classification|1
+4|Vehicle Tracking Using Driver Mobile Gps Tracking|2
+5|Sentiment Analysis for Product Rating|3
+6|Fingerprint Based ATM System|4
+sqlite> SELECT * FROM Projects WHERE id = 2;
+2|Online Mobile Recharge Portal Project|2
+4|Vehicle Tracking Using Driver Mobile Gps Tracking|2
+sqlite> DELETE id FROM Projects WHERE id = 4;
+Error: near "id": syntax error
+sqlite> DELETE project_id  FROM Projects WHERE id = 4;                                                                           
+Error: near "project_id": syntax error
+sqlite> DELETE id  FROM Person WHERE id = 4;                                                                                   
+Error: near "id": syntax error
+sqlite> DELETE  FROM Person WHERE id = 4;
+sqlite> SELECT * FROM Person;
+1|Renuka|Renuka@gmail.com
+2|sindhu|sindhu@gmail.com
+3|harika|harika@gmail.com
+sqlite> SELECT * FROM Projects;
+1|Android Task Monitoring|1
+2|Online Mobile Recharge Portal Project|2
+3|Detecting E Banking Phishing Websites Using Associative Classification|1
+4|Vehicle Tracking Using Driver Mobile Gps Tracking|2
+5|Sentiment Analysis for Product Rating|3
+6|Fingerprint Based ATM System|4
+sqlite> DELETE  FROM Projects WHERE id = 4;                                                                                      
+sqlite> SELECT * FROM Projects;
+1|Android Task Monitoring|1
+2|Online Mobile Recharge Portal Project|2
+3|Detecting E Banking Phishing Websites Using Associative Classification|1
+4|Vehicle Tracking Using Driver Mobile Gps Tracking|2
+5|Sentiment Analysis for Product Rating|3
+sqlite> 

@@ -1,0 +1,85 @@
+Q1 = '''
+        SELECT MatchCaptain.captain,MatchCaptain.team_id,Player.jersey_no,Player.name,Player.date_of_birth,Player.age FROM Player 
+        INNER JOIN MatchCaptain ON MatchCaptain.captain = player.player_id 
+        WHERE EXISTS (SELECT MatchCaptain.captain FROM MatchCaptain  WHERE  MatchCaptain.captain = Player.player_id)
+        AND NOT EXISTS(SELECT GoalDetails.goal_id FROM GoalDetails  WHERE GoalDetails.player_id = Player.player_id);
+     '''    
+     
+Q2 = '''
+        SELECT team_id,COUNT(match_no) FROM MatchTeamDetails
+        GROUP BY(team_id);
+     '''    
+     
+Q3 = '''
+        SELECT `Team`.team_id,(SELECT COUNT(goal_id) FROM GoalDetails  WHERE `GoalDetails`.team_id = `Team`.team_id)/
+        CAST((SELECT COUNT(player_id) FROM Player WHERE `Team`.team_id = `Player`.team_id) AS float)  
+        as avg_goal_score FROM Team INNER JOIN GoalDetails ON `Team`.team_id = `GoalDetails`.team_id 
+        GROUP BY `Team`.team_id;
+     '''                
+     
+Q4 = "SELECT captain,COUNT(match_no) FROM MatchCaptain GROUP BY (captain);"       
+
+Q5 = '''
+        SELECT COUNT(DISTINCT(captain)) FROM Match INNER JOIN MatchCaptain ON 
+        `Match`.match_no = `MatchCaptain`.match_no      
+        WHERE `MatchCaptain`.captain = `Match`.player_of_match;
+     '''
+     
+Q6 = '''
+        SELECT DISTINCT(captain) FROM MatchCaptain mc
+        WHERE EXISTS(SELECT match_no FROM Match m  WHERE m.match_no = mc.match_no)
+        AND NOT EXISTS(SELECT player_of_match FROM Match WHERE `Match`.player_of_match = mc.captain);
+     '''
+       
+ 
+Q7 = '''
+        SELECT strftime('%m',play_date) AS month,(SELECT COUNT(match_no) FROM Match m
+        WHERE strftime('%m',m.play_date) = strftime('%m',Match.play_date) )AS no_of_matches 
+        FROM Match GROUP BY month ORDER BY no_of_matches DESC,month DESC;
+     '''
+        
+
+Q8 = '''
+        SELECT jersey_no,COUNT(captain) AS no_captains FROM Player INNER JOIN MatchCaptain ON
+        `MatchCaptain`.captain = `Player`.player_id GROUP BY (jersey_no) ORDER BY no_captains DESC,jersey_no DESC;
+     '''
+     
+Q9 = '''
+        SELECT player_id,AVG(audience) AS avg_audience FROM 
+        Match INNER JOIN MatchTeamDetails ON 
+        `MatchTeamDetails`.match_no = `Match`.match_no
+        INNER JOIN Player ON `MatchTeamDetails`.team_id = 
+        `Player`.team_id GROUP BY player_id ORDER BY avg_audience DESC,player_id
+         DESC;
+     '''
+     
+Q10 = "SELECT team_id,AVG(age) FROM Player GROUP BY (team_id);"
+
+Q11 = '''
+        SELECT AVG(age) FROM MatchCaptain INNER JOIN Player ON
+        `MatchCaptain`.captain = `Player`.player_id;
+      '''
+      
+Q12 = '''
+        SELECT strftime('%m',date_of_birth) AS month,(SELECT COUNT(player_id) FROM Player p
+        WHERE strftime('%m',p.date_of_birth) = strftime('%m',Player.date_of_birth) )AS no_of_players 
+        FROM Player GROUP BY month ORDER BY no_of_players DESC,month DESC;
+      '''        
+      
+Q13 = '''
+        SELECT captain,COUNT(win_lose) AS no_of_wins FROM MatchTeamDetails INNER JOIN MatchCaptain
+        ON `MatchCaptain`.match_no = `MatchTeamDetails`.match_no WHERE win_lose = 'W'
+         AND `MatchCaptain`.team_id = `MatchTeamDetails`.team_id
+        GROUP BY captain ORDER BY no_of_wins DESC;
+      '''
+    
+    
+'''
+
+Q7 = "SELECT EXTRACT(MONTH FROM play_date)as month,COUNT(match_no) FROM Match  GROUP BY(match_no);"
+Q6 = 
+         SELECT DISTINCT(captain) FROM MatchCaptain INNER JOIN Match ON
+        `Match`.match_no = `MatchCaptain`.match_no GROUP BY captain 
+         HAVING ((`Match`.player_of_match <> `MatchCaptain`.captain)
+         );  
+'''

@@ -1,0 +1,72 @@
+Q1 = '''
+        SELECT a.id,a.fname,a.lname,a.gender FROM Actor a
+        INNER JOIN Cast c ON a.id = c.pid INNER JOIN 
+        Movie m ON m.id = c.mid WHERE name LIKE 'Annie%'; 
+     '''    
+
+Q2 = '''
+        SELECT m.id,m.name,m.rank,m.year FROM Movie m INNER JOIN
+        MovieDirector md ON m.id = md.mid INNER JOIN 
+        Director d ON d.id =  md.did WHERE d.fname = 'Biff'
+        AND lname = 'Malibu' AND year IN(1999,1994,2003) ORDER BY rank
+        DESC , year ASC;
+     '''
+     
+Q3 = '''
+        SELECT year,COUNT(name) FROM Movie m GROUP BY (year)
+        HAVING ( (SELECT AVG(rank) FROM Movie WHERE m.year = `Movie`.year) > 
+        (SELECT AVG(rank) FROM Movie) ) ORDER BY year ASC;
+     '''    
+     
+Q4 = '''
+        SELECT id,name,year,rank FROM Movie  WHERE year = 2001 AND
+        rank < (SELECT AVG(rank) FROM Movie) ORDER BY rank DESC LIMIT 10;
+     '''    
+
+Q6 = '''
+        SELECT DISTINCT(a.id) FROM Actor a INNER JOIN Cast c ON a.id = c.pid
+        INNER JOIN Movie m ON m.id = c.mid GROUP BY m.id,a.id HAVING
+        COUNT(DISTINCT role) > 1 ORDER BY a.id ASC LIMIT 100;
+     '''
+     
+Q7 = '''
+        SELECT fname, COUNT(fname) FROM Director GROUP BY(fname)
+        HAVING COUNT(fname) > 1;
+        
+     '''             
+     
+Q8 = '''
+        SELECT id,fname,lname FROM Director d
+        WHERE EXISTS (SELECT 
+        pid FROM MovieDirector md INNER JOIN Cast c
+        ON c.mid = md.mid WHERE d.id = did GROUP BY md.mid HAVING COUNT(DISTINCT pid) >= 100)
+        AND NOT EXISTS (SELECT c.pid FROM MovieDirector md INNER JOIN Cast c
+        ON c.mid = md.mid WHERE d.id = did GROUP BY md.mid HAVING COUNT(DISTINCT pid) < 100);
+        
+     '''
+
+Q8 =    SELECT DISTINCT id,fname,lname FROM Director d INNER JOIN MovieDirector md ON
+        d.id = md.did INNER JOIN Cast c ON c.mid = md.mid GROUP BY md.mid,d.id
+        HAVING COUNT(DISTINCT(c.pid)) > 100;         
+
+
+Q5 = '''
+        SELECT m.id AS movie_id, 
+        (SELECT COUNT(a.gender) FROM Actor a  INNER JOIN Cast c ON a.id = c.pid 
+        WHERE m.id = c.mid AND a.gender = 'F') as no_of_female_actors,
+        (SELECT COUNT(a.gender) FROM Actor a  INNER JOIN Cast c ON a.id = c.pid 
+        WHERE m.id = c.mid AND a.gender = 'M') as no_of_male_actors
+        FROM Movie m ORDER BY movie_id ASC LIMIT 100;
+      '''
+      
+      
+Q5 = '''
+        SELECT m.id AS movie_id FROM (SELECT COUNT(a.gender) FROM
+        Actor a  INNER JOIN Cast c ON a.id = c.pid WHERE m.id = c.mid AND
+        a.gender = 'F') as no_of_female_actors Movie m;
+     '''
+
+SELECT * FROM 
+(SELECT mid,COUNT(pid) AS no_of_female_actors  FROM Cast c 
+INNER JOIN Actor a ON  c.mid = a.id WHERE gender = 'F')  AS C_F
+INNER JOIN (SELECT mid,COUNT(pid) AS no_of_male_actors FROM Cast c 
